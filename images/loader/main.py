@@ -4,11 +4,11 @@ from models import PlaceModel, PeopleModel, Base
 from schemas import Place, People
 from loader import CsvLoader
 
-# todo unfortunately the Table(.) use the inspect method which isn't available
+# Unfortunately the Table(.) use the inspect method which isn't available
 # with an async engine. Hence I copied models here as well (code duplication). That put 3 possible options:
 # 1) run this with conn.run_sync().
 # 2) run the loading with sync engine.
-# Didn't have time to do it.
+# Depending on needs this can be easily wrapped into a Fast API application. I didn't think it was essential here.
 
 
 async def async_load():

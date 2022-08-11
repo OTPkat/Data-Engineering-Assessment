@@ -13,19 +13,20 @@ services:
 
 
   tester:
-    container_name: worker
-    hostname: host
     image: temper_tester
     build:
       context: images/tester
       dockerfile: Dockerfile
-    depends_on:
-      - loader
     environment:
       POSTGRES_PASSWORD: test_password
       POSTGRES_USER: test_user
       POSTGRES_DB: test_db
-    restart: always
+    restart: on-failure
+    volumes:
+      - ./data:/data/
+    depends_on:
+      - database
+
 
 
   loader:
@@ -34,5 +35,6 @@ services:
     volumes:
       - ./data:/data
     depends_on:
-      - db
+      - database
+
 

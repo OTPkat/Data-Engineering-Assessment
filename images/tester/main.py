@@ -1,9 +1,8 @@
 import asyncio
-from sqlalchemy.future import select
-from sqlalchemy import func
-from models import PlaceModel, PeopleModel
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession
+from dao import Dao
+import json
 
 
 async def async_test():
@@ -12,23 +11,13 @@ async def async_test():
         future=True,
         echo=True,
     )
+
     async with AsyncSession(engine) as session:
         async with session.begin():
-            statement = (
-                select(func.count(PlaceModel.country), PlaceModel.country)
-                    .join(
-                    PeopleModel.place_of_birth,
-                    PeopleModel.place_of_birth == PlaceModel.city,
-                )
-                    .group_by(PlaceModel.country)
-            )
-            result = await session.execute(statement)
-            # todo adapt the code above to not have to do the line below
-            print(result)
-            print({
-                record["country"]: record["count"] for record in result.all()
-            })
-
+            summary = await Dao.get_summary(db=session)
+            print(f"DB summary: {summary}")
+            with open('/data/sample_output1.json', 'w') as fp:
+                json.dump(summary, fp)
 
 if __name__ == "__main__":
     asyncio.run(async_test())
