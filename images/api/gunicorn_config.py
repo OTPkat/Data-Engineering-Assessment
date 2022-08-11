@@ -1,5 +1,4 @@
 """gunicorn server configuration."""
-import os
 
 threads = 8
 workers = 1
