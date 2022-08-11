@@ -21,4 +21,3 @@ class PeopleModel(Base):
     family_name = Column(String)
     date_of_birth = Column(Date)
     place_id_of_birth = Column(Integer, ForeignKey("places.id"))
-

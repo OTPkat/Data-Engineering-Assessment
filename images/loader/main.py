@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 import asyncio
 from models import PlaceModel, PeopleModel, Base
 from schemas import Place, People
-from loader import CsvLoader
+from csv_loader import CsvLoader
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -35,24 +35,33 @@ async def async_load():
     )
     async with AsyncSession(engine) as session:
         async with session.begin():
+            # Below I use pandas as I didn't get the time to properly
+            # do everything with sqlalchemy, but in practice the join
+            # made below would be made in SQL using temp table if data volume
+            # is big, otherwise a with statement can work.
             statement = select(PlaceModel.id, PlaceModel.city)
             places = await session.execute(statement)
             df_places = pd.DataFrame(
                 places.all(), columns=["place_id_of_birth", "city"]
             )
             df_people = pd.read_csv("/data/people.csv")
-            session.add_all([PeopleModel(**People(**x).dict()) for x in
-                pd.merge(
-                    df_people, df_places, right_on="city", left_on="place_of_birth"
-                )[["place_id_of_birth", "date_of_birth", "family_name", "given_name"]].to_dict('records')
-            ])
-
-
-
-    # await csv_loader.load_csv(
-    #     file_path="/data/people.csv", model=PeopleModel, schema=People
-    # )
-    #
+            session.add_all(
+                [
+                    PeopleModel(**People(**x).dict())
+                    for x in pd.merge(
+                        df_people, df_places, right_on="city", left_on="place_of_birth"
+                    )[
+                        [
+                            "place_id_of_birth",
+                            "date_of_birth",
+                            "family_name",
+                            "given_name",
+                        ]
+                    ].to_dict(
+                        "records"
+                    )
+                ]
+            )
 
 
 if __name__ == "__main__":
