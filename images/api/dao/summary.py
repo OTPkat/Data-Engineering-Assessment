@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-import csv
 from sqlalchemy.future import select
 
 
