@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class PlaceModel(Base):
-    __tablename__ = "place"
+    __tablename__ = "places"
     id = Column(Integer, primary_key=True, autoincrement=True)
     city = Column(String)
     county = Column(String)
