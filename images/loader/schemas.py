@@ -8,7 +8,7 @@ class People(BaseModel):
     given_name: str
     family_name: str
     date_of_birth: datetime.date
-    place_of_birth: str
+    place_id_of_birth: int
 
     class Config:
         orm_mode = True

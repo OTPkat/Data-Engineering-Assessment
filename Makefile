@@ -29,7 +29,7 @@ build-tester:
 	$(DOCKER_COMP_F) build tester
 
 test: up-no-build
-	$(DOCKER_COMP) run -v ./data:/app/data  tester
+	$(DOCKER_COMP) run -v ./data:/app/data tester
 
 test-with-build: build-tester up-with-build
 	$(DOCKER_COMP) run -v ./data:/app/data tester

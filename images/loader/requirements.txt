@@ -1,3 +1,4 @@
 pydantic >=1.6.2
 SQLAlchemy~=1.4.40
 asyncpg==0.25.0
+pandas
