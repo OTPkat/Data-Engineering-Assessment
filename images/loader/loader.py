@@ -14,9 +14,16 @@ class CsvLoader:
                     headers = next(reader)
                     session.add_all(
                         [
-                            model(**schema(**{header: value for (header, value) in zip(headers, row)}).dict())
+                            model(
+                                **schema(
+                                    **{
+                                        header: value
+                                        for (header, value) in zip(headers, row)
+                                    }
+                                ).dict()
+                            )
                             for row in reader
                         ]
-                        )
+                    )
 
         await session.commit()

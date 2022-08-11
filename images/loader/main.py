@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine
 import asyncio
-from models import PlaceModel, PeopleModel
+from models import PlaceModel, PeopleModel, Base
 from schemas import Place, People
 from loader import CsvLoader
 
@@ -19,12 +19,21 @@ async def async_load():
     engine = create_async_engine(
         "postgresql+asyncpg://test_user:test_password@database/test_db",
         future=True,
-        echo=True
+        echo=True,
     )
 
     csv_loader = CsvLoader(engine=engine)
-    await csv_loader.load_csv(file_path="/data/places.csv", model=PlaceModel, schema=Place)
-    await csv_loader.load_csv(file_path="/data/people.csv", model=PeopleModel, schema=People)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+    await csv_loader.load_csv(
+        file_path="/data/places.csv", model=PlaceModel, schema=Place
+    )
+    await csv_loader.load_csv(
+        file_path="/data/people.csv", model=PeopleModel, schema=People
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.run(async_load())
+

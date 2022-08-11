@@ -9,13 +9,8 @@ ENV PYTHONUNBUFFERED True
 ENV APP_HOME /app
 WORKDIR $APP_HOME
 COPY . ./
-
-# Install production dependencies.
-RUN pip install -r requirements.txt
-RUN pip install gunicorn uvicorn
+RUN python3 -m pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
 
-EXPOSE 5000
-
-
-CMD gunicorn main:app -c gunicorn_config.py
+CMD ["python3", "main.py"]
