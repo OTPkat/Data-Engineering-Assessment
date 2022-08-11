@@ -19,16 +19,24 @@ services:
     build:
       context: ./images/api
       dockerfile: Dockerfile
-    volumes:
-      - ./data:/data
+#    volumes:
+#      - ./data:/data
     depends_on:
-      - database
+      - db
     environment:
       POSTGRES_PASSWORD: test_password
       POSTGRES_USER: test_user
       POSTGRES_DB: test_db
     ports:
       - 5000:5000
+
+  loader:
+    image: temper-loader
+    build: ./images/loader
+    volumes:
+      - ./data:/data
+    depends_on:
+      - api
 
 
 
