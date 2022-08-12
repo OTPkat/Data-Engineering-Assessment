@@ -33,6 +33,9 @@ an option to show some sqlalchemy code I suppose. For the same reason im directl
 to get the DB summary. So with more time/other infra code duplication wouldn't happen. I could also do more edgy things like mounting
 shared code in some way that make this work but I don't think that this is a good option.
 2. The use of pandas to join the table before inserting to SQL would be done differently as explained in the code (see images/tester/main.py)
+3. Didn't include CI and tests (I basically checked the output).
+4. Didn't include lint
+5. Didn't include mypy check.
 
 
 ## Purpose
