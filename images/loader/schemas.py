@@ -1,7 +1,7 @@
+import datetime
 import typing
 
 from pydantic import BaseModel
-import datetime
 
 
 class People(BaseModel):

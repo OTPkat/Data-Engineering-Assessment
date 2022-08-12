@@ -1,10 +1,11 @@
 import asyncio
 import os
 
+from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.asyncio import create_async_engine
+
 from loader import PeopleLoader, PlaceLoader
 from orm import Base
-from sqlalchemy.engine.url import URL
 
 
 async def async_load():

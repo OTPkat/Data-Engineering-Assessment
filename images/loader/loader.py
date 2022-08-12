@@ -1,11 +1,13 @@
 import csv
-from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Type, TypeVar, Generic
 from abc import ABC, abstractmethod
+from typing import List, Type, TypeVar, Generic
+
+import pandas as pd
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+
 from orm import PeopleOrm, PlacesOrm, Base
 from schemas import Place, People, BaseModel
-import pandas as pd
-from sqlalchemy.future import select
 
 T = TypeVar("T", bound=Type[Base])
 S = TypeVar("S", bound=Type[BaseModel])

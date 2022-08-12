@@ -2,14 +2,13 @@ import asyncio
 import json
 import os
 import typing
-import logging
 
 from sqlalchemy import func
+from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
-from sqlalchemy.engine.url import URL
 
 from orm import PlacesOrm, PeopleOrm
 
@@ -47,7 +46,6 @@ async def async_test():
     async with AsyncSession(engine) as session:
         async with session.begin():
             summary = await get_db_summary(db=session)
-            logging.info(f"DB summary: {summary}")
             with open("/data/sample_output1.json", "w") as fp:
                 json.dump(summary, fp)
 
