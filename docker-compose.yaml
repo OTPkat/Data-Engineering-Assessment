@@ -32,6 +32,10 @@ services:
   loader:
     image: temper-loader
     build: ./images/loader
+    environment:
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_USER: test_user
+      POSTGRES_DB: test_db
     volumes:
       - ./data:/data
     depends_on:

@@ -1,13 +1,21 @@
 import asyncio
+import os
 
 from sqlalchemy.ext.asyncio import create_async_engine
 from loader import PeopleLoader, PlaceLoader
-from models import Base
+from orm import Base
+from sqlalchemy.engine.url import URL
 
 
 async def async_load():
     engine = create_async_engine(
-        f"postgresql+asyncpg://test_user:test_password@database/test_db",
+        URL.create(
+            drivername="postgresql+asyncpg",
+            username=os.environ["POSTGRES_USER"],
+            password=os.environ["POSTGRES_PASSWORD"],
+            database=os.environ["POSTGRES_DB"],
+            host="database",
+        ),
         future=True,
         echo=True,
     )

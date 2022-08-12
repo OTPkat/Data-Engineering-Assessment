@@ -1,13 +1,37 @@
 # Temper.works code assignment for data engineering candidates
 
-## Pascal's Submission notes
+## Solution Organisation
+
+As asked in the assignment, you will find two images in the `images` folder. 
+
+- The `loader` image
+contains the ingestion `csvs -> database`, and the tables' creation. The `loader.py` contains
+the classes responsible to load data to the tables. `orm.py` contains the sqlalchemy orms. 
+`schemas.py` contains the Pydantic schemas used for (de)-serialization and validation. `main.py`
+contains the file executed by the container.
+- The `tester` image is responsible for querying the db and save the output to 
+`/data/sample_output1.json`.
+
+You can refer to the makefile to see the commands I added/modified. But essentially
+to run the two container, just spawn the db. Then you can individually test them as:
+
+- `make load-with-build`: `build loader container -> load the data to the databse`
+- `make load`: `load the data to the database`
+- `make test-with-build`: `build tester container -> query db and save output in local data folder`
+- `make test`: `query db and save output in local data folder`
+
+
+
+## Pascal's Submission notes before reading the assignment
 Here are some points I would rework with more time/different stack.
-1. The code duplication of models.py (in both container) is here because of lack of time. One could potentially wrap the loader
+1. The code duplication of orm.py (in both container) is here because of lack of time. One could potentially wrap the loader
 into a (e.g. FastAPI) application, move the query doing the join (currently in tester/main.py) to be implemented
-diretly in the app, and open an endpoint for it. But I guess the most reasonnable option would be to use 
-an orchestrator like Airflow (remove docker compose) to execute all the steps (create tables -> load data -> query to eget
-the final answer), while the actual creation of the DB would be in terraform, I guess in an infrastructure repository. It was also
-an option to show some sqlalchemy code I suppose.
+directly in the app, and open an endpoint for it. But I guess the most reasonable option would be to use 
+an orchestrator like Airflow (remove docker compose) to execute all the steps : `create tables -> load data -> query to get
+the final answer -> dump output where desired`, while the actual creation of the DB would be in terraform, I guess in an infrastructure repository. It was also
+an option to show some sqlalchemy code I suppose. For the same reason im directly connecting to the DB in the tester container
+to get the DB summary. So with more time/other infra code duplication wouldn't happen. I could also do more edgy things like mounting
+shared code in some way that make this work but I don't think that this is a good option.
 2. The use of pandas to join the table before inserting to SQL would be done differently as explained in the code (see images/tester/main.py)
 
 

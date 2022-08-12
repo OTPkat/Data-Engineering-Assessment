@@ -2,17 +2,17 @@ import csv
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Type, TypeVar, Generic
 from abc import ABC, abstractmethod
-from models import PeopleModel, PlaceModel, Base
-from schemas import Place, People, BaseModel as BaseSchema
+from orm import PeopleOrm, PlacesOrm, Base
+from schemas import Place, People, BaseModel
 import pandas as pd
 from sqlalchemy.future import select
 
 T = TypeVar("T", bound=Type[Base])
-S = TypeVar("S", bound=Type[BaseSchema])
+S = TypeVar("S", bound=Type[BaseModel])
 
 
 class FileLoader(Generic[T, S], ABC):
-    model: Type[T]
+    orm: Type[T]
     schema: Type[S]
 
     @classmethod
@@ -23,7 +23,7 @@ class FileLoader(Generic[T, S], ABC):
             await cls.load_records(
                 engine=engine,
                 records=[
-                    cls.model(
+                    cls.orm(
                         **cls.schema(
                             **{header: value for (header, value) in zip(headers, row)}
                         ).dict()
@@ -43,8 +43,8 @@ class FileLoader(Generic[T, S], ABC):
         ...
 
 
-class PlaceLoader(FileLoader[PlaceModel, Place]):
-    model = PlaceModel
+class PlaceLoader(FileLoader[PlacesOrm, Place]):
+    orm = PlacesOrm
     schema = Place
 
     @classmethod
@@ -52,8 +52,8 @@ class PlaceLoader(FileLoader[PlaceModel, Place]):
         await cls.load_csv(file_path=file_path, engine=engine)
 
 
-class PeopleLoader(FileLoader[PeopleModel, People]):
-    model = PeopleModel
+class PeopleLoader(FileLoader[PeopleOrm, People]):
+    orm = PeopleOrm
     schema = People
 
     @classmethod
@@ -64,7 +64,7 @@ class PeopleLoader(FileLoader[PeopleModel, People]):
         # is big, otherwise a with statement can work.
         async with AsyncSession(engine) as session:
             async with session.begin():
-                statement = select(PlaceModel.id, PlaceModel.city)
+                statement = select(PlacesOrm.id, PlacesOrm.city)
                 places = await session.execute(statement)
                 df_places = pd.DataFrame(
                     places.all(), columns=["place_id_of_birth", "city"]
@@ -73,7 +73,7 @@ class PeopleLoader(FileLoader[PeopleModel, People]):
         await cls.load_records(
             engine=engine,
             records=[
-                PeopleModel(**People(**x).dict())
+                PeopleOrm(**People(**x).dict())
                 for x in pd.merge(
                     df_people,
                     df_places,

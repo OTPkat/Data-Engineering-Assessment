@@ -5,16 +5,16 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 
-class PlaceModel(Base):
+class PlacesOrm(Base):
     __tablename__ = "places"
     id = Column(Integer, primary_key=True, autoincrement=True)
     city = Column(String)
     county = Column(String)
     country = Column(String)
-    people = relationship("PeopleModel")
+    people = relationship("PeopleOrm")
 
 
-class PeopleModel(Base):
+class PeopleOrm(Base):
     __tablename__ = "people"
     id = Column(Integer, primary_key=True, autoincrement=True)
     given_name = Column(String)
