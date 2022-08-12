@@ -1,5 +1,16 @@
 # Temper.works code assignment for data engineering candidates
 
+## Pascal's Submission notes
+Here are some points I would rework with more time/different stack.
+1. The code duplication of models.py (in both container) is here because of lack of time. One could potentially wrap the loader
+into a (e.g. FastAPI) application, move the query doing the join (currently in tester/main.py) to be implemented
+diretly in the app, and open an endpoint for it. But I guess the most reasonnable option would be to use 
+an orchestrator like Airflow (remove docker compose) to execute all the steps (create tables -> load data -> query to eget
+the final answer), while the actual creation of the DB would be in terraform, I guess in an infrastructure repository. It was also
+an option to show some sqlalchemy code I suppose.
+2. The use of pandas to join the table before inserting to SQL would be done differently as explained in the code (see images/tester/main.py)
+
+
 ## Purpose
 
 This test is designed to showcase your understanding of databases and data processing, together with your aptitude in Python.
