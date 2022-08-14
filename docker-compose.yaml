@@ -2,36 +2,43 @@ version: "3.7"
 
 services:
   database:
-    image: mysql:8.0
-    platform: linux/amd64
-    command:
-      - "--default-authentication-plugin=mysql_native_password"
-    environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=temper_code_test
-      - MYSQL_USER=temper_code_test
-      - MYSQL_PASSWORD=good_luck
-#    ports:
-#      - "3306:3306"
+    image: postgres:13.0
     restart: always
+    environment:
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_USER: test_user
+      POSTGRES_DB: test_db
+    ports:
+      - 5405:5432
 
-  example-node:
-    image: example-node
-    build: images/example-node
-    command: ["./example.js"]
+
+  tester:
+    image: temper_tester
+    build:
+      context: images/tester
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_USER: test_user
+      POSTGRES_DB: test_db
+    restart: on-failure
+    volumes:
+      - ./data:/data/
+    depends_on:
+      - database
+
+
+
+  loader:
+    image: temper-loader
+    build: ./images/loader
+    environment:
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_USER: test_user
+      POSTGRES_DB: test_db
     volumes:
       - ./data:/data
+    depends_on:
+      - database
 
-  example-python:
-    image: example-python
-    build: images/example-python
-    command: ["./example.py"]
-    volumes:
-      - ./data:/data
 
-  example-r:
-    image: example-r
-    build: images/example-r
-    command: ["./example.R"]
-    volumes:
-      - ./data:/data
