@@ -71,7 +71,7 @@ class PeopleLoader(FileLoader[PeopleOrm, People]):
                 df_places = pd.DataFrame(
                     places.all(), columns=["place_id_of_birth", "city"]
                 )
-        df_people = pd.read_csv("/data/people.csv")
+        df_people = pd.read_csv(file_path)
         await cls.load_records(
             engine=engine,
             records=[

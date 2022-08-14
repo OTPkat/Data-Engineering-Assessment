@@ -28,7 +28,7 @@ async def async_load():
         await conn.run_sync(Base.metadata.create_all)
 
     await PlaceLoader.load_file(file_path="/data/places.csv", engine=engine)
-    await PeopleLoader.load_file(file_path="/data/places.csv", engine=engine)
+    await PeopleLoader.load_file(file_path="/data/people.csv", engine=engine)
 
 
 if __name__ == "__main__":
